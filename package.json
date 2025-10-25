@@ -1,0 +1,64 @@
+{
+  "name": "@taxu/taxu-js",
+  "version": "0.1.0",
+  "description": "Official TypeScript SDK for the Taxu platform (AI-powered tax filing and accounting automation)",
+  "license": "MIT",
+  "author": "Sam Lightson <saml@taxu.io>",
+  "keywords": [
+    "taxu",
+    "taxu-js",
+    "sdk",
+    "typescript",
+    "javascript",
+    "tax",
+    "accounting",
+    "ai"
+  ],
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "prepare": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "echo \"Add your preferred linter here\"",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/multivitaminds/taxu-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/multivitaminds/taxu-js/issues"
+  },
+  "homepage": "https://github.com/multivitaminds/taxu-js#readme",
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
