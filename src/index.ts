@@ -82,6 +82,33 @@ export class TaxuClient {
     }
   }
 
+  /**
+   * Make a direct request to any Taxu API endpoint
+   */
+  async request<T = any>(
+    endpoint: string,
+    options?: {
+      method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+      data?: any;
+      params?: Record<string, any>;
+    }
+  ): Promise<TaxuApiResponse<T>> {
+    try {
+      const { method = 'GET', data, params } = options || {};
+      
+      const response = await this.client.request({
+        url: endpoint,
+        method: method.toLowerCase() as any,
+        data,
+        params
+      });
+      
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
   private handleError(error: any): Error {
     if (error.response) {
       // API error response
@@ -104,6 +131,9 @@ export default TaxuClient;
 export * from './types';
 
 // Convenience function to create a client
-export function createTaxuClient(config: TaxuConfig): TaxuClient {
-  return new TaxuClient(config);
+export function createTaxuClient(apiKeyOrConfig: string | TaxuConfig): TaxuClient {
+  if (typeof apiKeyOrConfig === 'string') {
+    return new TaxuClient({ apiKey: apiKeyOrConfig });
+  }
+  return new TaxuClient(apiKeyOrConfig);
 }
