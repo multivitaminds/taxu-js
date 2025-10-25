@@ -281,6 +281,23 @@ Taxu is an AI-powered tax and accounting platform trusted by 50,000+ businesses 
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+## Releasing
+
+This package uses automated releases via GitHub Actions. To publish a new version:
+
+1. Update the version in `package.json`
+2. Create and push a git tag matching the package version:
+   ```bash
+   git tag v0.1.2
+   git push origin v0.1.2
+   ```
+3. The GitHub Action will automatically:
+   - Validate the tag matches package.json version
+   - Run tests and build the package
+   - Publish to npm with provenance
+
+**Note:** Keep an `NPM_TOKEN` (Automation token) in your GitHub repository secrets.
+
 ## License
 
 MIT © [Taxu](https://taxu.io)

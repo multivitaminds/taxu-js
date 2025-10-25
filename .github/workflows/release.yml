@@ -2,59 +2,53 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    tags: ['v*']
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
-    
     permissions:
+      id-token: write   # for npm provenance (OIDC)
       contents: read
-      id-token: write
-      
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
-      - name: Setup Node.js
+
+      - name: Use Node.js 20 (npm 10)
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
-          
-      - name: Install dependencies
+
+      - name: Validate tag matches package.json version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"          # e.g. v0.1.2
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if [ "v$PKG_VERSION" != "$TAG" ]; then
+            echo "Tag ($TAG) does not match package.json version (v$PKG_VERSION)"; exit 1;
+          fi
+
+      - name: Install deps
         run: npm ci
-        
+
       - name: Build
         run: npm run build
-        
+
       - name: Run tests
         run: npm test
-        continue-on-error: true # Remove this once you add real tests
-        
-      - name: Publish to npm
-        run: npm publish --access public
+
+      - name: Who am I (debug)
+        run: |
+          npm whoami
+          npm config get registry
+
+      - name: Publish to npm (public with provenance)
+        run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            ## Changes
-            
-            - See [CHANGELOG.md](CHANGELOG.md) for details
-            
-            ## Installation
-            
-            ```bash
-            npm install @taxu/taxu-js@${{ github.ref_name }}
-            ```
-          draft: false
-          prerelease: false
