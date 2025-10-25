@@ -1,0 +1,15 @@
+# dependencies & builds
+node_modules/
+dist/
+coverage/
+.tmp/
+.nyc_output/
+
+# env & logs
+.env
+*.log
+
+# macOS / editors
+.DS_Store
+.vscode/
+.idea/
